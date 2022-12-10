@@ -10,6 +10,7 @@ import org.testng.annotations.DataProvider;
         },
         features = "classpath:features",
         glue = {"ru.lanit.at.steps", "ru.lanit.at.hooks", "ru.lanit.at.corecommonstep"}
+
 )
 public class Runner extends AbstractTestNGCucumberTests {
 

@@ -119,6 +119,19 @@ public class WebActionWebSteps extends AbstractWebSteps {
         LOGGER.info("в поле '{}' введено значение '{}'", field, value);
     }
 
+
+    @Когда("ввести в поле {string} ссылку на файл {string}")
+    public void fillTheInputFile(String field, String link) {
+        link = replaceVars(link, getStorage());
+        SelenideElement fieldElement = pageManager
+                .getCurrentPage()
+                .getElement(field);
+        fieldElement
+                .sendKeys(link);
+
+        LOGGER.info("в поле '{}' введена ссылка '{}'", field, link);
+    }
+
     /**
      * Сохранить  значения из элемент
      *
