@@ -2,7 +2,10 @@ package ru.lanit.at.steps.api;
 
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.ru.Дано;
+import io.cucumber.java.ru.Затем;
 import io.cucumber.java.ru.И;
+import io.cucumber.java.ru.Тогда;
 import io.qameta.allure.Allure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import ru.lanit.at.api.ApiRequest;
 import ru.lanit.at.api.models.RequestModel;
 import ru.lanit.at.utils.CompareUtil;
 import ru.lanit.at.utils.ContextHolder;
+import ru.lanit.at.utils.DataGenerator;
 import ru.lanit.at.utils.VariableUtil;
 
 import java.util.HashMap;
@@ -31,14 +35,14 @@ public class ApiSteps {
     @И("добавить header")
     public void addHeaders(DataTable dataTable) {
         Map<String, String> headers = new HashMap<>();
-        dataTable.asLists().forEach(it -> headers.put(it.get(0), it.get(1)));
+        dataTable.asLists().forEach(it -> headers.put(it.get(0), replaceVarsIfPresent(it.get(1))));
         apiRequest.setHeaders(headers);
     }
 
     @И("добавить query параметры")
     public void addQuery(DataTable dataTable) {
         Map<String, String> query = new HashMap<>();
-        dataTable.asLists().forEach(it -> query.put(it.get(0), it.get(1)));
+        dataTable.asLists().forEach(it -> query.put(it.get(0), replaceVarsIfPresent(it.get(1))));
         apiRequest.setQuery(query);
     }
 
@@ -77,4 +81,8 @@ public class ApiSteps {
             LOG.info("Сравнение значений: {} {} {}", expect, it.get(1), actual);
         });
     }
+
+
+
+
 }
