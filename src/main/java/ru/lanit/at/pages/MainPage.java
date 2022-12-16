@@ -6,7 +6,7 @@ import ru.lanit.at.utils.web.pagecontext.WebPage;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-@Name(value = "Helpdesk")
+@Name(value = "Страница Helpdesk")
 public class MainPage extends WebPage {
 
     @Name("поле поиска")
@@ -15,10 +15,10 @@ public class MainPage extends WebPage {
     @Name("кнопка Go")
     private SelenideElement searchButton = $x("//button/i[contains(@class,'fa-search')]");
 
-    @Name("Log In")
+    @Name("Кнопка Log In")
     private SelenideElement loginButton = $x("//a[@href='/login/?next=/']");
 
-    @Name("New Ticket")
+    @Name("Кнопка New Ticket")
     private SelenideElement newTicketButton = $x("//a[@href=\"/tickets/submit/\"]");
 
 

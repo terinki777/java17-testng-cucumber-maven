@@ -7,16 +7,16 @@ import ru.lanit.at.utils.web.pagecontext.WebPage;
 import static com.codeborne.selenide.Selenide.$x;
 
 
-@Name(value = "LoginPage")
+@Name(value = "Страница авторизации")
 public class LoginPage extends WebPage {
 
-    @Name("username")
+    @Name("Поле username")
     private SelenideElement usernameField = $x("//input[@id='username']");
 
-    @Name("password")
+    @Name("Поле password")
     private SelenideElement passwordField = $x("//input[@id='password']");
 
-    @Name("submit")
+    @Name("Кнопка submit")
     private SelenideElement loginButton = $x("//input[@value='Login']");
 
 }
