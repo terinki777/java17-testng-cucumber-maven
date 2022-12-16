@@ -8,34 +8,27 @@ import ru.lanit.at.utils.web.pagecontext.WebPage;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-@Name(value = "TicketPage")
+@Name(value = "Страница просмотра тикета")
 public class TicketPage extends WebPage {
 
-    @Name("EDIT")
+    @Name("Кнопка EDIT")
     private SelenideElement editButton = $x("//a[@class='ticket-edit']");
 
-    @Name("EDIT_DETAILS")
+    @Name("Кнопка EDIT_DETAILS")
     private SelenideElement editDetailsButton = $x("//a[@href='#FurtherEditOptions']/button");
 
-    @Name("ATTACH_FILE")
+    @Name("Кнопка ATTACH_FILE")
     private SelenideElement attachFileButton = $x("//button[@id='ShowFileUpload']");
 
-    //    @Name("BROWSE")
-//    private SelenideElement browseButton = $x("//input[@name='attachment']");
-    @Name("BROWSE")
+
+    @Name("Кнопка BROWSE")
     private SelenideElement browseButton = $x("//label[@class='btn btn-primary btn-sm btn-file']");
 
 
-    @Name("UPDATE_THIS_TICKET")
+    @Name("Кнопка UPDATE_THIS_TICKET")
     private SelenideElement updateThisTicketButton = $x("//button[@type='submit']");
 
-//    @Name("File")
-//    private SelenideElement fileInput = $x("//span[@id='selectedfilename0']");
-
-//    @Name("File")
-//    private SelenideElement fileInput = $x("//input[@type='file']");
-
-    @Name("File")
+    @Name("Поле ввода File")
     private SelenideElement fileInput = $("input[type='file']");
 
 

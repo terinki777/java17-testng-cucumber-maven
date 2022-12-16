@@ -10,6 +10,7 @@ import ru.lanit.at.actions.WebActions;
 import ru.lanit.at.utils.Sleep;
 import ru.lanit.at.utils.web.pagecontext.PageManager;
 
+import java.io.File;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -127,8 +128,7 @@ public class WebActionWebSteps extends AbstractWebSteps {
                 .getCurrentPage()
                 .getElement(field);
         fieldElement
-                .sendKeys(link);
-
+                .uploadFile(new File(link));
         LOGGER.info("в поле '{}' введена ссылка '{}'", field, link);
     }
 
@@ -164,4 +164,17 @@ public class WebActionWebSteps extends AbstractWebSteps {
                 .shouldBe(Condition.visible)
                 .clear();
     }
+
+    @И("выбрать элемент {string} в выпадающем списке {string}")
+    public void selectValueOnDropdownList(String value, String elementName) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element
+                .shouldBe(Condition.enabled, Duration.ofSeconds(60))
+                .selectOptionContainingText(value);
+        LOGGER.info("значение '{}' выбрано в списке '{}'", value, elementName);
+    }
+
+
 }
