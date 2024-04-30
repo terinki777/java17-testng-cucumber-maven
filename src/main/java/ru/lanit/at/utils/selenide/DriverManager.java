@@ -26,12 +26,10 @@ public class DriverManager {
         }
     }
 
-
     private static void createDriver() {
         Configurations cf = ConfigFactory.create(Configurations.class
                 , System.getProperties(),
                 System.getenv());
-
 
         WebConfigurations cfg = ConfigFactory.create(WebConfigurations.class
                 , System.getProperties(),
@@ -63,7 +61,7 @@ public class DriverManager {
         Configuration.pageLoadTimeout = TimeUnit.SECONDS.toMillis(cfg.pageLoadTimeoutSeconds());
         Configuration.pollingInterval = cfg.pollingTimeoutMs();
         Configuration.reportsFolder = System.getProperty("selenide.report.folder");
-        Configuration.downloadsFolder = System.getProperty("selenide.download.folder");
+//        Configuration.downloadsFolder = System.getProperty("selenide.download.folder");
         Environment.initPages(cfg.pagesPackage());
     }
 
@@ -74,5 +72,6 @@ public class DriverManager {
         String standParam = conf.getStand();
         Stand stand = Stand.getByName(standParam);
         Selenide.open("https://" + stand.getUrlPath());
+        Selenide.open();
     }
 }

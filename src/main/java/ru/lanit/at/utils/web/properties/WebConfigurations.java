@@ -16,15 +16,15 @@ public interface WebConfigurations extends Config {
     String webDriverBrowserSize();
 
     @Key("webdriver.version")
-    @DefaultValue("chrome")
+    @DefaultValue("")
     String webDriverVersion();
 
     @Key("webdriver.browser.name")
-    @DefaultValue("")
+    @DefaultValue("chrome")
     String webDriverBrowserName();
 
     @Key("webdriver.timeoutSeconds")
-    @DefaultValue("5")
+    @DefaultValue("10")
     int webDriverTimeoutSeconds();
 
     @Key("webdriver.pageLoadTimeoutSeconds")

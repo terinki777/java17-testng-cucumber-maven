@@ -15,13 +15,14 @@
         <cucumber.version>7.2.3</cucumber.version>
         <aspectj.version>1.9.6</aspectj.version>
         <aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
-        <surefire.version>2.22.2</surefire.version>
+        <maven.surefire.plugin.version>3.2.3</maven.surefire.plugin.version>
         <selenide.version>7.3.1</selenide.version>
         <log4j.version>2.15.0</log4j.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <allure.version>2.17.2</allure.version>
-        <allure.maven.version>2.10.0</allure.maven.version>
+        <maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
+        <allure.version>2.25.0</allure.version>
+        <allure.maven.version>2.12.0</allure.maven.version>
+        <allure-testng.version>2.14.0</allure-testng.version>
         <common-lang3.version>3.12.0</common-lang3.version>
         <restassured.version>4.4.0</restassured.version>
         <jackson.version>2.12.3</jackson.version>
@@ -33,7 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <source>${java.source}</source>
                     <target>${java.target}</target>
@@ -43,7 +44,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
+                <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/suite.xml</suiteXmlFile>
@@ -51,7 +52,7 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <skipTests>false</skipTests>
                     <argLine>
-                        -Dcucumber.filter.tags="${tags}"
+<!--                        -Dcucumber.filter.tags="${tags}"-->
                         -Dfile.encoding=UTF-8
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
@@ -61,9 +62,8 @@
                         <selenide.report.folder>${project.build.directory}/report</selenide.report.folder>
                         <selenide.download.folder>${project.build.directory}/download</selenide.download.folder>
                     </systemPropertyVariables>
+
                 </configuration>
-
-
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
@@ -71,8 +71,6 @@
                         <version>${aspectj.version}</version>
                     </dependency>
                 </dependencies>
-
-
             </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
@@ -86,8 +84,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>${aspectj-maven-plugin.version}</version>
-
-
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
