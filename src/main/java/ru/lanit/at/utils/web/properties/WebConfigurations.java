@@ -16,7 +16,7 @@ public interface WebConfigurations extends Config {
     String webDriverBrowserSize();
 
     @Key("webdriver.version")
-    @DefaultValue("")
+    @DefaultValue("chrome")
     String webDriverVersion();
 
     @Key("webdriver.browser.name")
@@ -24,12 +24,11 @@ public interface WebConfigurations extends Config {
     String webDriverBrowserName();
 
     @Key("webdriver.timeoutSeconds")
-    @DefaultValue("10")
+    @DefaultValue("5")
     int webDriverTimeoutSeconds();
 
-
     @Key("webdriver.pageLoadTimeoutSeconds")
-    @DefaultValue("120")
+    @DefaultValue("20")
     int pageLoadTimeoutSeconds();
 
     @Key("selenoid.enableVNC")
@@ -47,6 +46,4 @@ public interface WebConfigurations extends Config {
     @Key("site_url")
     @DefaultValue("")
     String site_url();
-
-
 }
