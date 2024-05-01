@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.$x;
 public class GooglePage extends WebPage {
 
     @Name("поле поиска")
-    private SelenideElement searchField = $x("//input[@name='q']");
+    private SelenideElement searchField = $x("//textarea[@name='q']");
 
     @Name("кнопка поиска")
     private SelenideElement searchButton = $x("//input[@value='Поиск в Google']");

@@ -6,4 +6,7 @@
             <class name="Runner"/>
         </classes>
     </test>
+    <listeners>
+        <listener class-name="rerun.RetryListener"></listener>
+    </listeners>
 </suite>

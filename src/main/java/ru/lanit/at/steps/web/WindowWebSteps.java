@@ -1,6 +1,5 @@
 package ru.lanit.at.steps.web;
 
-
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import io.cucumber.java.ru.Если;
@@ -34,7 +33,7 @@ public class WindowWebSteps extends AbstractWebSteps {
      * @param url url
      */
     @Если("открыть url {string}")
-    public void open(String url) {
+    public void openUrl(String url) {
         DriverManager.startDriver();
         Selenide.open(url);
     }
