@@ -2,7 +2,6 @@ package ru.lanit.at.utils.web.properties;
 
 import org.aeonbits.owner.Config;
 
-
 @Config.LoadPolicy(Config.LoadType.MERGE)
 @Config.Sources({
         "classpath:config/configuration.properties",
@@ -10,15 +9,12 @@ import org.aeonbits.owner.Config;
         "system:env"
 })
 public interface Configurations extends Config {
-
-
     @Key("stand")
     @DefaultValue("GOOGLE")
     String getStand();
 
-
     @Key("screen_after_step")
-    @DefaultValue("false")
+    @DefaultValue("true")
     boolean screenAfterStep();
 
     @Key("remoteUrl")
@@ -36,5 +32,4 @@ public interface Configurations extends Config {
     @Key("enableLog")
     @DefaultValue("false")
     boolean getEnableLog();
-
 }

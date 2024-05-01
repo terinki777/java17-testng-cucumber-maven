@@ -5,7 +5,6 @@ import com.codeborne.selenide.FileDownloadMode;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.aeonbits.owner.ConfigFactory;
 import ru.lanit.at.utils.ErrorMessage;
@@ -27,12 +26,10 @@ public class DriverManager {
         }
     }
 
-
     private static void createDriver() {
         Configurations cf = ConfigFactory.create(Configurations.class
                 , System.getProperties(),
                 System.getenv());
-
 
         WebConfigurations cfg = ConfigFactory.create(WebConfigurations.class
                 , System.getProperties(),
@@ -52,21 +49,6 @@ public class DriverManager {
             Configuration.browserCapabilities.setCapability("selenoid:options", options);
             Configuration.browserCapabilities.setCapability("sessionTimeout", "30m");
             Configuration.fileDownload = FileDownloadMode.FOLDER;
-        } else {
-            switch (cfg.webDriverBrowserName()) {
-                case "chrome":
-                    WebDriverManager.chromedriver().setup();
-                    break;
-                case "firefox":
-                    WebDriverManager.firefoxdriver().setup();
-                    break;
-                case "edge":
-                    WebDriverManager.edgedriver().setup();
-                    break;
-                default: {
-                    throw new IllegalArgumentException(String.format(ErrorMessage.BROWSER_NOT_SUPPORTED, cfg.webDriverBrowserName()));
-                }
-            }
         }
 
         Configuration.browser = cfg.webDriverBrowserName();
@@ -79,7 +61,7 @@ public class DriverManager {
         Configuration.pageLoadTimeout = TimeUnit.SECONDS.toMillis(cfg.pageLoadTimeoutSeconds());
         Configuration.pollingInterval = cfg.pollingTimeoutMs();
         Configuration.reportsFolder = System.getProperty("selenide.report.folder");
-        Configuration.downloadsFolder = System.getProperty("selenide.download.folder");
+//        Configuration.downloadsFolder = System.getProperty("selenide.download.folder");
         Environment.initPages(cfg.pagesPackage());
     }
 
@@ -90,5 +72,6 @@ public class DriverManager {
         String standParam = conf.getStand();
         Stand stand = Stand.getByName(standParam);
         Selenide.open("https://" + stand.getUrlPath());
+        Selenide.open();
     }
 }
