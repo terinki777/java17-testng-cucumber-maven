@@ -10,7 +10,6 @@ import io.cucumber.core.gherkin.Pickle;
 import io.cucumber.core.gherkin.Step;
 import io.cucumber.gherkin.GherkinDialect;
 import io.cucumber.gherkin.GherkinDialectProvider;
-import io.cucumber.gherkin.IGherkinDialectProvider;
 import io.cucumber.plugin.event.DataTableArgument;
 import io.cucumber.plugin.event.DocStringArgument;
 import io.cucumber.plugin.event.Location;
@@ -274,8 +273,8 @@ public class FragmentReplacer {
      * @return  -   шаг ФРАГМЕНТ "название фрагмента"
      */
     private Step getMockStep(Step step, Pickle fragment) {
-        IGherkinDialectProvider dialectProvider = new GherkinDialectProvider();
-        GherkinDialect dialect = dialectProvider.getDialect(fragment.getLanguage(), null);
+        GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
+        Optional<GherkinDialect> dialect = dialectProvider.getDialect(fragment.getLanguage());
         Location location = step.getLocation();
         return new CustomStep(
                 step.getId(),
@@ -353,8 +352,8 @@ public class FragmentReplacer {
                 }
                 checkVarsForDynamicFragments(replaceValue, scenario, fragmentStep);
 
-                IGherkinDialectProvider dialectProvider = new GherkinDialectProvider();
-                GherkinDialect dialect = dialectProvider.getDialect(language, null);
+                GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
+                Optional<GherkinDialect> dialect = dialectProvider.getDialect(language);
                 Location location = fragmentStep.getLocation();
                 Step replaceStep = new CustomStep(
                         fragmentStep.getId(),

@@ -59,6 +59,4 @@ public class Environment {
     public static WebPage getPage(Class<?> c) {
         return getPage(getClassAnnotationValue(c));
     }
-
-
 }

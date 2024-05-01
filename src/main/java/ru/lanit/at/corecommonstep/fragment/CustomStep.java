@@ -9,6 +9,7 @@ import io.cucumber.plugin.event.DocStringArgument;
 import io.cucumber.plugin.event.Location;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class CustomStep implements Step {
@@ -26,7 +27,7 @@ public class CustomStep implements Step {
             String text,
             List<List<String>> argument,
             Class argumentType,
-            GherkinDialect dialect,
+            Optional<GherkinDialect> dialect,
             String previousGwtKeyWord,
             Location location,
             String keyword
@@ -52,23 +53,23 @@ public class CustomStep implements Step {
         return null;
     }
 
-    private static StepType extractKeyWordType(String keyWord, GherkinDialect dialect) {
+    private static StepType extractKeyWordType(String keyWord, Optional<GherkinDialect> dialect) {
         if (StepType.isAstrix(keyWord)) {
             return StepType.OTHER;
         }
-        if (dialect.getGivenKeywords().contains(keyWord)) {
+        if (dialect.get().getGivenKeywords().contains(keyWord)) {
             return StepType.GIVEN;
         }
-        if (dialect.getWhenKeywords().contains(keyWord)) {
+        if (dialect.get().getWhenKeywords().contains(keyWord)) {
             return StepType.WHEN;
         }
-        if (dialect.getThenKeywords().contains(keyWord)) {
+        if (dialect.get().getThenKeywords().contains(keyWord)) {
             return StepType.THEN;
         }
-        if (dialect.getAndKeywords().contains(keyWord)) {
+        if (dialect.get().getAndKeywords().contains(keyWord)) {
             return StepType.AND;
         }
-        if (dialect.getButKeywords().contains(keyWord)) {
+        if (dialect.get().getButKeywords().contains(keyWord)) {
             return StepType.BUT;
         }
         throw new IllegalStateException("Keyword " + keyWord + " was neither given, when, then, and, but nor *");
