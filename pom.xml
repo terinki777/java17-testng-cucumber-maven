@@ -8,10 +8,12 @@
     <artifactId>autotest-template-with-cucumber</artifactId>
     <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>core</module>
         <module>project</module>
     </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source>17</java.source>
@@ -53,10 +55,9 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/suite.xml</suiteXmlFile>
+                        <suiteXmlFile>${project.basedir}/src/test/resources/suite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <testFailureIgnore>false</testFailureIgnore>
-                    <skipTests>false</skipTests>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>

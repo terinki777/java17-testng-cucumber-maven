@@ -34,7 +34,7 @@ public class WebHooks {
     }
 
 
-    /** Прикрепление видео в Аллюр отчет при условии запускать  с параметром remoteUrl. */
+    /** Прикрепление видео в Аллюр отчет при условии запускать с параметром remoteUrl. */
     private void attachVideo(String sessionId) {
         Configurations cf = ConfigFactory.create(Configurations.class
                 , System.getProperties(),
