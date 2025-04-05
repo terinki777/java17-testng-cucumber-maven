@@ -1,5 +1,5 @@
 #language:ru
-@google
+@example3
 @ExternalId=with_all_annotations
 @DisplayName=Test_with_all_annotations
 @WorkItemIds=3

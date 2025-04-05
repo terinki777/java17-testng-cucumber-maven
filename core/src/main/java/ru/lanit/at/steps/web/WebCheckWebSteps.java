@@ -4,7 +4,6 @@ import com.codeborne.selenide.SelenideElement;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
 import io.qameta.allure.Allure;
-import io.qameta.allure.model.Status;
 import ru.lanit.at.actions.WebChecks;
 import ru.lanit.at.utils.allure.AllureHelper;
 import ru.lanit.at.utils.web.pagecontext.PageManager;
@@ -19,7 +18,7 @@ public class WebCheckWebSteps extends AbstractWebSteps {
 
 
     /**
-     * проверка присутствия текста на странице
+     * Проверка присутствия текста на странице
      *
      * @param text текст
      */
@@ -42,7 +41,6 @@ public class WebCheckWebSteps extends AbstractWebSteps {
     public void textAppearOnThePage(String text) {
         WebChecks.textVisibleOnPage(text, null);
         LOGGER.info("на странице '{}' имеется текст '{}'", pageManager.getCurrentPage().name(), text);
-        Allure.step("шаг успешно выполнился");
     }
 
     /**
@@ -54,7 +52,11 @@ public class WebCheckWebSteps extends AbstractWebSteps {
     public void textVisibleOnPage(String text) {
         WebChecks.textAbsentOnPage(text, null);
         LOGGER.info("на странице '{}' отсутствует текст '{}'", pageManager.getCurrentPage().name(), text);
-        Allure.step("шаг успешно выполнился", Status.PASSED);
+        /**
+         * Варианты добавления информации внутрь шагов
+         */
+        AllureHelper.addInfoAllureStep("AllureHelper.addInfoAllureStep: шаг выполнился успешно");
+        Allure.step("Allure.step: шаг выполнился успешно");
     }
 
     /**
