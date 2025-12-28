@@ -1,5 +1,6 @@
 #language:ru
 @google
+  @regress
 @ExternalId=with_all_annotations
 @DisplayName=Test_with_all_annotations
 @WorkItemIds=3
