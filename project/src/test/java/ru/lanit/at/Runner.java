@@ -7,7 +7,8 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         plugin = {
                 "pretty",
-                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+                "ru.lanit.at.utils.allure.CustomAllureCucumber"
+//                , "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         },
         features = "classpath:features",
 //        tags = "@google or @negative",

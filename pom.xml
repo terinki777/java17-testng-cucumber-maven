@@ -144,11 +144,11 @@
         </dependency>
 
         <!--allure-->
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-cucumber7-jvm</artifactId>
-            <version>${allure-cucumber7-jvm.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-cucumber7-jvm</artifactId>-->
+<!--            <version>${allure-cucumber7-jvm.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
@@ -223,17 +223,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.testit</groupId>
-            <artifactId>testit-adapter-cucumber7</artifactId>
-            <version>${adapter.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.testit</groupId>
-            <artifactId>testit-java-commons</artifactId>
-            <version>${adapter.version}</version>
         </dependency>
     </dependencies>
 
