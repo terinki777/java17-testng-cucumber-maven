@@ -10,23 +10,21 @@ import io.qameta.allure.model.StepResult;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Stack;
 
 public class CustomAllureCucumber implements ConcurrentEventListener {
 
     private final ThreadLocal<Map<String, Object>> storage = ThreadLocal.withInitial(HashMap::new);
+    private final ThreadLocal<Stack<String>> nestedStepsStack = ThreadLocal.withInitial(Stack::new);
     private final AllureLifecycle lifecycle = Allure.getLifecycle();
 
     @Override
     public void setEventPublisher(EventPublisher publisher) {
-        publisher.registerHandlerFor(TestCaseStarted.class, this::handleTestCaseStarted);
+        // Регистрируем только события шагов, НЕ регистрируем TestCaseStarted/Finished
+        // чтобы не конфликтовать со стандартным созданием тестов
         publisher.registerHandlerFor(TestStepStarted.class, this::handleTestStepStarted);
         publisher.registerHandlerFor(TestStepFinished.class, this::handleTestStepFinished);
         publisher.registerHandlerFor(TestCaseFinished.class, this::handleTestCaseFinished);
-    }
-
-    private void handleTestCaseStarted(TestCaseStarted event) {
-        storage.get().clear();
-        storage.get().put("testCaseStarted", true);
     }
 
     private void handleTestStepStarted(TestStepStarted event) {
@@ -37,17 +35,22 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
         PickleStepTestStep testStep = (PickleStepTestStep) event.getTestStep();
         String stepText = testStep.getStep().getText().trim();
 
-        System.out.println("Step started: " + stepText);
-
-        if (stepText.matches("^\\* шаг №\\d+$")) {
+        if (stepText.startsWith("шаг №")) {
             // Это начало новой группы
-            // ЗАКРЫВАЕМ предыдущую группу, если она существует
+            // Закрываем предыдущую группу если она существует
             closeCurrentGroup();
+
+            // Очищаем стек вложенных шагов предыдущей группы
+            Stack<String> stack = nestedStepsStack.get();
+            while (!stack.isEmpty()) {
+                String stepId = stack.pop();
+                lifecycle.updateStep(stepId, s -> s.setStatus(Status.PASSED));
+                lifecycle.stopStep(stepId);
+            }
 
             // Создаем новую группу
             String groupId = UUID.randomUUID().toString();
             storage.get().put("currentGroupId", groupId);
-            storage.get().put("isGroupStep", true);
 
             StepResult stepResult = new StepResult()
                     .setName(stepText.replace("* ", ""))
@@ -64,48 +67,50 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
                     .setStatus(Status.PASSED);
 
             lifecycle.startStep(parentId, stepId, stepResult);
-            storage.get().put("currentStepId", stepId);
+
+            // Сохраняем ID шага в стек для последующего завершения
+            nestedStepsStack.get().push(stepId);
         } else {
             // Это обычный шаг (не в группе)
             String stepId = UUID.randomUUID().toString();
-            storage.get().put("currentStepId", stepId);
 
             StepResult stepResult = new StepResult()
                     .setName(stepText)
                     .setStatus(Status.PASSED);
 
             lifecycle.startStep(stepId, stepResult);
+            nestedStepsStack.get().push(stepId);
         }
     }
 
     private void handleTestStepFinished(TestStepFinished event) {
-        Map<String, Object> store = storage.get();
+        Stack<String> stack = nestedStepsStack.get();
 
-        if (store.containsKey("currentStepId")) {
-            // Завершаем текущий шаг (вложенный или обычный)
-            String stepId = (String) store.get("currentStepId");
+        // Завершаем последний шаг в стеке (вложенный или обычный)
+        if (!stack.isEmpty()) {
+            String stepId = stack.pop();
             Status status = convertStatus(event.getResult().getStatus());
             lifecycle.updateStep(stepId, s -> s.setStatus(status));
             lifecycle.stopStep(stepId);
-            store.remove("currentStepId");
-        }
-
-        // Если это был групповой шаг, помечаем что его нужно закрыть
-        // Но не закрываем сразу - группа будет закрыта при начале новой группы или в конце теста
-        if (store.containsKey("isGroupStep")) {
-            store.remove("isGroupStep");
-            // НЕ закрываем группу здесь! Только снимаем флаг
         }
     }
 
     private void handleTestCaseFinished(TestCaseFinished event) {
-        Map<String, Object> store = storage.get();
-
         // Завершаем последнюю группу если она осталась открытой
         closeCurrentGroup();
 
+        // Завершаем все оставшиеся шаги в стеке
+        Stack<String> stack = nestedStepsStack.get();
+        while (!stack.isEmpty()) {
+            String stepId = stack.pop();
+            lifecycle.updateStep(stepId, s -> s.setStatus(Status.BROKEN));
+            lifecycle.stopStep(stepId);
+        }
+
+        // Очищаем ThreadLocal
         storage.get().clear();
         storage.remove();
+        nestedStepsStack.remove();
     }
 
     /**
@@ -115,33 +120,22 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
         Map<String, Object> store = storage.get();
         if (store.containsKey("currentGroupId")) {
             String groupId = (String) store.get("currentGroupId");
-            Status status = Status.PASSED; // По умолчанию PASSED
 
-            // Если есть результат теста, используем его статус
-            // Но в этом методе мы не знаем о результате, так что используем PASSED
-
-            lifecycle.updateStep(groupId, s -> s.setStatus(status));
+            lifecycle.updateStep(groupId, s -> s.setStatus(Status.PASSED));
             lifecycle.stopStep(groupId);
             store.remove("currentGroupId");
         }
     }
 
     private Status convertStatus(io.cucumber.plugin.event.Status cucumberStatus) {
-        switch (cucumberStatus) {
-            case PASSED:
-                return Status.PASSED;
-            case FAILED:
-                return Status.FAILED;
-            case SKIPPED:
-                return Status.SKIPPED;
-            case PENDING:
-                return Status.SKIPPED;
-            case UNDEFINED:
-                return Status.BROKEN;
-            case AMBIGUOUS:
-                return Status.BROKEN;
-            default:
-                return Status.BROKEN;
-        }
+        return switch (cucumberStatus) {
+            case PASSED -> Status.PASSED;
+            case FAILED -> Status.FAILED;
+            case SKIPPED -> Status.SKIPPED;
+            case PENDING -> Status.SKIPPED;
+            case UNDEFINED -> Status.BROKEN;
+            case AMBIGUOUS -> Status.BROKEN;
+            default -> Status.BROKEN;
+        };
     }
 }
