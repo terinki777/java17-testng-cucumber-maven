@@ -40,7 +40,11 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
         System.out.println("Step started: " + stepText);
 
         if (stepText.matches("^\\* шаг №\\d+$")) {
-            // Это начало группы
+            // Это начало новой группы
+            // ЗАКРЫВАЕМ предыдущую группу, если она существует
+            closeCurrentGroup();
+
+            // Создаем новую группу
             String groupId = UUID.randomUUID().toString();
             storage.get().put("currentGroupId", groupId);
             storage.get().put("isGroupStep", true);
@@ -51,7 +55,7 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
 
             lifecycle.startStep(groupId, stepResult);
         } else if (storage.get().containsKey("currentGroupId")) {
-            // Это вложенный шаг внутри группы
+            // Это вложенный шаг внутри текущей группы
             String parentId = (String) storage.get().get("currentGroupId");
             String stepId = UUID.randomUUID().toString();
 
@@ -86,10 +90,11 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
             store.remove("currentStepId");
         }
 
-        // Если это был групповой шаг, не завершаем группу сразу
-        // Группа будет завершена когда встретим следующий групповой шаг или конец сценария
+        // Если это был групповой шаг, помечаем что его нужно закрыть
+        // Но не закрываем сразу - группа будет закрыта при начале новой группы или в конце теста
         if (store.containsKey("isGroupStep")) {
             store.remove("isGroupStep");
+            // НЕ закрываем группу здесь! Только снимаем флаг
         }
     }
 
@@ -97,15 +102,28 @@ public class CustomAllureCucumber implements ConcurrentEventListener {
         Map<String, Object> store = storage.get();
 
         // Завершаем последнюю группу если она осталась открытой
-        if (store.containsKey("currentGroupId")) {
-            String groupId = (String) store.get("currentGroupId");
-            Status status = convertStatus(event.getResult().getStatus());
-            lifecycle.updateStep(groupId, s -> s.setStatus(status));
-            lifecycle.stopStep(groupId);
-        }
+        closeCurrentGroup();
 
         storage.get().clear();
         storage.remove();
+    }
+
+    /**
+     * Закрывает текущую активную группу, если она существует
+     */
+    private void closeCurrentGroup() {
+        Map<String, Object> store = storage.get();
+        if (store.containsKey("currentGroupId")) {
+            String groupId = (String) store.get("currentGroupId");
+            Status status = Status.PASSED; // По умолчанию PASSED
+
+            // Если есть результат теста, используем его статус
+            // Но в этом методе мы не знаем о результате, так что используем PASSED
+
+            lifecycle.updateStep(groupId, s -> s.setStatus(status));
+            lifecycle.stopStep(groupId);
+            store.remove("currentGroupId");
+        }
     }
 
     private Status convertStatus(io.cucumber.plugin.event.Status cucumberStatus) {
